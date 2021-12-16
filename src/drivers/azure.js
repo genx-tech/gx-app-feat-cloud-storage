@@ -1,19 +1,29 @@
 class AzureService {
     constructor(app, options) {
         const { accountName, accountKey, containerName } = options;
-        const StorageBlob = app.tryRequire("@azure/storage-blob");
+        const StorageBlob = app.tryRequire('@azure/storage-blob');
 
         this.app = app;
 
-        const { BlobServiceClient, StorageSharedKeyCredential, BlobSASPermissions } = StorageBlob;
+        const {
+            BlobServiceClient,
+            StorageSharedKeyCredential,
+            BlobSASPermissions,
+        } = StorageBlob;
 
         // Use StorageSharedKeyCredential with storage account and account key
         // StorageSharedKeyCredential is only available in Node.js runtime, not in browsers
-        const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
+        const sharedKeyCredential = new StorageSharedKeyCredential(
+            accountName,
+            accountKey
+        );
 
         const endpoint = `https://${accountName}.blob.core.windows.net`;
 
-        const blobServiceClient = new BlobServiceClient(endpoint, sharedKeyCredential);
+        const blobServiceClient = new BlobServiceClient(
+            endpoint,
+            sharedKeyCredential
+        );
 
         this.client = blobServiceClient.getContainerClient(containerName);
 
@@ -55,6 +65,6 @@ class AzureService {
 
         return blockBlobClient.generateSasUrl(options);
     }
-};
+}
 
 module.exports = AzureService;

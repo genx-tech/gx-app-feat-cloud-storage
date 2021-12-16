@@ -1,8 +1,8 @@
 class S3Service {
     constructor(app, options) {
         const { endpoint, accessKeyId, secretAccessKey, bucket } = options;
-        
-        const AWS = app.tryRequire("aws-sdk");
+
+        const AWS = app.tryRequire('aws-sdk');
 
         const spacesEndpoint = new AWS.Endpoint(endpoint);
 
@@ -22,7 +22,7 @@ class S3Service {
             Key: objectKey,
             ContentType: contentType || 'text',
             Expires: 300,
-            ...extra
+            ...extra,
         });
     }
 
@@ -30,9 +30,9 @@ class S3Service {
         return this.client.getSignedUrl('getObject', {
             Bucket: this.bucket,
             Key: objectKey,
-            ...extra
+            ...extra,
         });
     }
-};
+}
 
 module.exports = S3Service;

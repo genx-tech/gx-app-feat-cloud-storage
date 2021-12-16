@@ -5,10 +5,10 @@ const {
 const { InvalidConfiguration } = require('@genx/error');
 
 const mapOfVendorToDriver = {
-    'digitalocean': 's3',
-    'aws': 's3',
-    'azure': 'azure'
-};  
+    digitalocean: 's3',
+    aws: 's3',
+    azure: 'azure',
+};
 
 /**
  * General cloud storage feature
@@ -40,7 +40,7 @@ module.exports = {
      *
      * vendor: 'digitalocean',
      * options: {
-     *   
+     *
      * }
      */
     load_: async function (app, options, name) {
@@ -50,9 +50,13 @@ module.exports = {
         const driver = mapOfVendorToDriver[vendor];
 
         if (driver == null) {
-            throw new InvalidConfiguration(`Unsupported vendor: ${vendor}`, app, `${name}.vendor`);
+            throw new InvalidConfiguration(
+                `Unsupported vendor: ${vendor}`,
+                app,
+                `${name}.vendor`
+            );
         }
-        
+
         const StorageService = require(`./drivers/${driver}.js`);
         const service = new StorageService(app, serviceOptions);
 
