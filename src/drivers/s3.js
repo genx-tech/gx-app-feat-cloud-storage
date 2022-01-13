@@ -16,21 +16,29 @@ class S3Service {
         this.bucket = bucket;
     }
 
-    async getUploadUrl_(objectKey, contentType, extra) {
-        return this.client.getSignedUrl('putObject', {
+    async getUploadUrl_(objectKey, contentType, payload) {
+        const params = {
             Bucket: this.bucket,
             Key: objectKey,
-            ContentType: contentType || 'text',
             Expires: 300,
-            ...extra,
+        };
+
+        if (contentType) {
+            // most of the time, you don't know the contentType before user selected the file
+            params.contentType = contentType;
+        }
+
+        return this.client.getSignedUrl('putObject', {
+            params,
+            ...payload,
         });
     }
 
-    async getDownloadUrl_(objectKey, extra) {
+    async getDownloadUrl_(objectKey, payload) {
         return this.client.getSignedUrl('getObject', {
             Bucket: this.bucket,
             Key: objectKey,
-            ...extra,
+            ...payload,
         });
     }
 }
