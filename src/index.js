@@ -5,8 +5,8 @@ const {
 const { InvalidConfiguration } = require('@genx/error');
 
 const mapOfVendorToDriver = {
-    digitalocean: 's3',
-    aws: 's3',
+    digitalocean: 's3v2',
+    aws: 's3v3',
     azure: 'azure',
 };
 

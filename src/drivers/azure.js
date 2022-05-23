@@ -1,6 +1,8 @@
+const { transformDownloadArgs, transformUploadArgs } = require('../utils');
+
 class AzureService {
     constructor(app, options) {
-        const { accountName, accountKey, containerName } = options;
+        const { accountName, accountKey, bucket: containerName } = options;
         const StorageBlob = app.tryRequire('@azure/storage-blob');
 
         this.app = app;
@@ -30,37 +32,48 @@ class AzureService {
         this.createBlobSASPermissions = () => new BlobSASPermissions();
     }
 
-    async getUploadUrl_(objectKey, contentType, extra) {
+    async getUploadUrl_(...args) {
+        const [objectKey, contentType, expiresInSeconds, payload] =
+            transformUploadArgs(...args);
+
         const blockBlobClient = this.client.getBlockBlobClient(objectKey);
         const permissions = this.createBlobSASPermissions();
         permissions.create = true;
         permissions.write = true;
 
-        // default 5 minutes
-        const expiresOn = this.app.now().plus({ minutes: 5 }).toJSDate();
+        const expiresOn = this.app
+            .now()
+            .plus({ seconds: expiresInSeconds })
+            .toJSDate();
 
         const options = {
             expiresOn,
             permissions,
             contentType,
-            ...extra,
+            ...payload,
         };
 
         return blockBlobClient.generateSasUrl(options);
     }
 
-    async getDownloadUrl_(objectKey, extra) {
+    async getDownloadUrl_(...args) {
+        const [objectKey, expiresInSeconds, payload] = transformDownloadArgs(
+            ...args
+        );
+
         const blockBlobClient = this.client.getBlockBlobClient(objectKey);
         const permissions = this.createBlobSASPermissions();
         permissions.read = true;
 
-        // default 5 minutes
-        const expiresOn = this.app.now().plus({ minutes: 5 }).toJSDate();
+        const expiresOn = this.app
+            .now()
+            .plus({ seconds: expiresInSeconds })
+            .toJSDate();
 
         const options = {
             expiresOn,
             permissions,
-            ...extra,
+            ...payload,
         };
 
         return blockBlobClient.generateSasUrl(options);

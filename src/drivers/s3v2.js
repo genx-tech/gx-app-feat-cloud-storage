@@ -1,3 +1,5 @@
+const { transformDownloadArgs, transformUploadArgs } = require('../utils');
+
 class S3Service {
     constructor(app, options) {
         const { endpoint, accessKeyId, secretAccessKey, bucket } = options;
@@ -16,28 +18,36 @@ class S3Service {
         this.bucket = bucket;
     }
 
-    async getUploadUrl_(objectKey, contentType, payload) {
+    async getUploadUrl_(...args) {
+        const [objectKey, contentType, expiresInSeconds, payload] =
+            transformUploadArgs(...args);
+
         const params = {
             Bucket: this.bucket,
             Key: objectKey,
-            Expires: 300,
+            Expires: expiresInSeconds,
         };
 
         if (contentType) {
             // most of the time, you don't know the contentType before user selected the file
-            params.contentType = contentType;
+            params.ContentType = contentType;
         }
 
         return this.client.getSignedUrl('putObject', {
-            params,
+            ...params,
             ...payload,
         });
     }
 
-    async getDownloadUrl_(objectKey, payload) {
+    async getDownloadUrl_(...args) {
+        const [objectKey, expiresInSeconds, payload] = transformDownloadArgs(
+            ...args
+        );
+
         return this.client.getSignedUrl('getObject', {
             Bucket: this.bucket,
             Key: objectKey,
+            Expires: expiresInSeconds,
             ...payload,
         });
     }

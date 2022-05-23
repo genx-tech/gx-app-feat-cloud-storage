@@ -44,3 +44,4 @@ allure-results
 allure-report
 
 *.edb
+test/conf/test.default.json

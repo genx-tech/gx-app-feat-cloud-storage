@@ -1,0 +1,40 @@
+{
+    "timezone": "Australia/Sydney",
+    "featureRegistry": {
+        "cloudStorage": "src/index"
+    },
+    "restClient": {
+
+    },
+    "serviceGroup": {
+        "cloudStorage": {
+            "digitalocean": {
+                "vendor": "digitalocean",
+                "options": {
+                    "endpoint": "",
+                    "accessKeyId": "",
+                    "secretAccessKey": "",
+                    "bucket": ""
+                }
+            },
+            "aws": {
+                "vendor": "aws",
+                "options": {
+                    "region": "",
+                    "accessKeyId": "",
+                    "secretAccessKey": "",
+                    "bucket": ""
+                }
+            },
+            "azure": {
+                "vendor": "azure",
+                "options": {
+                    "accountName": "",
+                    "accountKey": "",
+                    "containerName": ""
+                }
+            }
+        }
+    }
+    
+}
